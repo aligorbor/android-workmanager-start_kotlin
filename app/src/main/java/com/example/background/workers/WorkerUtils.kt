@@ -2,14 +2,17 @@
 
 package com.example.background.workers
 
+import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.annotation.WorkerThread
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.renderscript.Allocation
@@ -34,10 +37,6 @@ private const val TAG = "WorkerUtils"
 
 /**
  * Create a Notification that is shown as a heads-up notification if possible.
- *
- * For this codelab, this is used to show a notification so that you know when different steps
- * of the background work chain are starting
- *
  * @param message Message shown on the notification
  * @param context Context needed to create Toast
  */
@@ -69,6 +68,20 @@ fun makeStatusNotification(message: String, context: Context) {
             .setVibrate(LongArray(0))
 
     // Show the notification
+    if (ActivityCompat.checkSelfPermission(
+            context,
+            Manifest.permission.POST_NOTIFICATIONS
+        ) != PackageManager.PERMISSION_GRANTED
+    ) {
+        // TODO: Consider calling
+        //    ActivityCompat#requestPermissions
+        // here to request the missing permissions, and then overriding
+        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+        //                                          int[] grantResults)
+        // to handle the case where the user grants the permission. See the documentation
+        // for ActivityCompat#requestPermissions for more details.
+        return
+    }
     NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, builder.build())
 }
 
@@ -142,7 +155,6 @@ fun writeBitmapToFile(applicationContext: Context, bitmap: Bitmap): Uri {
                 it.close()
             } catch (ignore: IOException) {
             }
-
         }
     }
     return Uri.fromFile(outputFile)
