@@ -5,6 +5,8 @@
 
     <queries>
         <package android:name="com.google.android.apps.photos"/>
+<!--        <package android:name="com.android.documentsui"/>-->
+        <package android:name="com.android.gallery3d"/>
     </queries>
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -13,6 +15,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
+        android:name=".BlurApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -20,7 +23,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".BlurActivity"
+        <activity android:name=".SelectImageActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,6 +31,7 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".BlurActivity"/>
 
     </application>
 

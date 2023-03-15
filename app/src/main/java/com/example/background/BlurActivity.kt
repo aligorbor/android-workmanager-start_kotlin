@@ -7,21 +7,27 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.work.WorkInfo
+import com.bumptech.glide.Glide
 import com.example.background.databinding.ActivityBlurBinding
 
 class BlurActivity : AppCompatActivity() {
 
-    private val viewModel: BlurViewModel by viewModels {
-        BlurViewModel.BlurViewModelFactory(
-            application
-        )
-    }
+    //   private val viewModel: BlurViewModel by viewModels { BlurViewModel.BlurViewModelFactory(application) }
+    private val viewModel: BlurViewModel by viewModels()
+
     private lateinit var binding: ActivityBlurBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityBlurBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val imageUriExtra = intent.getStringExtra(KEY_IMAGE_URI)
+
+        viewModel.setImageUri(imageUriExtra)
+        viewModel.imageUri?.let { imageUri ->
+            Glide.with(this).load(imageUri).into(binding.imageView)
+        }
 
         binding.goButton.setOnClickListener { viewModel.applyBlur(blurLevel) }
         binding.seeFileButton.setOnClickListener {
@@ -72,14 +78,16 @@ class BlurActivity : AppCompatActivity() {
 
     private fun workInfosObserver(): Observer<List<WorkInfo>> {
         return Observer { listOfWorkInfo ->
-            if (listOfWorkInfo.isNullOrEmpty()){ return@Observer}
+            if (listOfWorkInfo.isNullOrEmpty()) {
+                return@Observer
+            }
             // because of beginUniqueWork
             // Every continuation has only one worker tagged TAG_OUTPUT
             val workInfo = listOfWorkInfo[0]
             if (workInfo.state.isFinished) {
                 showWorkFinished()
                 val outputImageUri = workInfo.outputData.getString(KEY_IMAGE_URI)
-                if (!outputImageUri.isNullOrEmpty()){
+                if (!outputImageUri.isNullOrEmpty()) {
                     viewModel.setOutputUri(outputImageUri)
                     binding.seeFileButton.visibility = View.VISIBLE
                 }
