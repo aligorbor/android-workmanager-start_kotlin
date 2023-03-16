@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <manifest package="com.example.background"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+          xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools">
 
     <queries>
         <package android:name="com.google.android.apps.photos"/>
@@ -32,6 +33,16 @@
         </activity>
 
         <activity android:name=".BlurActivity"/>
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:exported="false"
+            android:authorities="com.example.background.androidx-startup">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove"/>
+        </provider>
 
     </application>
 
