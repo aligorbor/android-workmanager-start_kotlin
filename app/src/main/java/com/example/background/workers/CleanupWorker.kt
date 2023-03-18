@@ -13,7 +13,7 @@ import java.io.File
 
 class CleanupWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
     override fun doWork(): Result {
-        makeStatusNotification("Cleaning up old temporary files", applicationContext)
+        makeStatusNotification("Cleaning up old temporary files", applicationContext,id)
         sleep()
         return try {
             val outputDirectory = File(applicationContext.filesDir, OUTPUT_PATH)

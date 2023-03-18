@@ -18,6 +18,7 @@ import androidx.renderscript.Allocation
 import androidx.renderscript.Element
 import androidx.renderscript.RenderScript
 import androidx.renderscript.ScriptIntrinsicBlur
+import androidx.work.WorkManager
 import com.example.background.*
 import timber.log.Timber
 import java.io.File
@@ -31,7 +32,7 @@ import java.util.*
  * @param message Message shown on the notification
  * @param context Context needed to create Toast
  */
-fun makeStatusNotification(message: String, context: Context) {
+fun makeStatusNotification(message: String, context: Context, workRequestId:UUID) {
 
     // Make a channel if necessary
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -51,12 +52,16 @@ fun makeStatusNotification(message: String, context: Context) {
     }
 
     // Create the notification
+    val intent = WorkManager.getInstance(context).createCancelPendingIntent(workRequestId)
     val builder = NotificationCompat.Builder(context, CHANNEL_ID)
         .setSmallIcon(R.drawable.ic_launcher_foreground)
         .setContentTitle(NOTIFICATION_TITLE)
+        .setTicker(NOTIFICATION_TITLE)
         .setContentText(message)
         .setPriority(NotificationCompat.PRIORITY_HIGH)
         .setVibrate(LongArray(0))
+        .setOngoing(true)
+        .addAction(android.R.drawable.ic_delete,"Cancel", intent)
 
     // Show the notification
 //    if (ActivityCompat.checkSelfPermission(
