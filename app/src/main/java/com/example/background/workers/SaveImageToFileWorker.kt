@@ -22,7 +22,7 @@ class SaveImageToFileWorker(ctx: Context, params: WorkerParameters) : Worker(ctx
         Locale.getDefault())
 
     override fun doWork(): Result {
-        makeStatusNotification("Saving image", applicationContext)
+        makeStatusNotification("Saving image", applicationContext, id)
         sleep()
 
         val resolver = applicationContext.contentResolver
